@@ -8,7 +8,11 @@ import {useDebounce} from "react-use";
 
 
 const API_URL = "https://api.themoviedb.org/3";
-const API_KEY = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3ZWJlNmZkNzk5MzAwODkzN2UwYTQ1NDBjMWYwNTk4YiIsIm5iZiI6MTc0MTAwNDI3Ni45Niwic3ViIjoiNjdjNTlkZjRkYjA1MDgyNDhhN2E3YmFhIiwic2NvcGVzIjpbImFwaV9yZWFkIl0sInZlcnNpb24iOjF9.BeOF0wbLq0UXUT3E-uzapzP70AYdHQ3VDq_OTDXb2_s";
+const API_KEY =  import.meta.env.VITE_API_KEY;
+const AI_API_KEY =  import.meta.env.VITE_AI_API_KEY;
+
+
+
 
 const options = {
   method: 'GET',
@@ -18,6 +22,13 @@ const options = {
   }
 };
 
+const options2 ={
+  method: "GET",
+  headers: {
+    'x-rapidapi-key': `${AI_API_KEY}`,
+    'x-rapidapi-host': 'ai-movie-recommender.p.rapidapi.com'
+  }
+}
 
 
 function App() {
@@ -26,12 +37,17 @@ function App() {
   const [search, set_search] = useState("");
   const [loading, setLoading] = useState(false);
   const [movies, setMovies] = useState([]);
-const [debounce, setDebounce] = useState('');
+  const [debounce, setDebounce] = useState('');
   const [trendingMovies, setTrendingMovies] = useState([]);
+  const [aimovies,setaiMovies] = useState([]);
+  const [errorAI, setErrorAI] = useState('');
+  const [loadingAI, setLoadingAI] = useState(false);
 
 
-  useDebounce(()=> setDebounce(search), 500 , [search])
+  useDebounce(()=> setDebounce(search), 1000 , [search])
 
+
+// Fetch Movie Section
 
   const Fetch_movie = async (query="") =>{
 
@@ -71,7 +87,10 @@ const [debounce, setDebounce] = useState('');
     Fetch_movie(debounce);
   },[debounce]);
 
-  const TrendingMovies = async () => {
+// Trends Movie Section
+
+
+const TrendingMovies = async () => {
     setError("");
     setLoading(true);
 
@@ -86,7 +105,7 @@ const [debounce, setDebounce] = useState('');
       const trend_data = await trend_response.json();
       console.log("Trending Movies:", trend_data);
 
-      setTrendingMovies(trend_data.results);  // ✅ Store in state
+      setTrendingMovies(trend_data.results);
 
     } catch (err) {
       console.error(`Error fetching trending movies: ${err}`);
@@ -95,11 +114,43 @@ const [debounce, setDebounce] = useState('');
       setLoading(false);
     }
   };
+
   useEffect(() => {
     TrendingMovies();
   }, []); // ✅ Runs once when component mounts
 
+  // Ai recomendation Section
 
+
+  const Ai_recomendation = async (query = "") => {
+    setErrorAI('');
+    setLoadingAI(true);
+
+    try {
+      const Ai_recom_endpoint = `https://ai-movie-recommender.p.rapidapi.com/api/search?q=${query}`;
+      const ai_response = await fetch(Ai_recom_endpoint, options2);
+
+      if (!ai_response.ok) {
+        throw new Error("Couldn't fetch AI movies.");
+      }
+
+      const ai_data = await ai_response.json();
+      console.log("AI Recommendation:", ai_data);
+
+      setaiMovies(ai_data.results);
+    } catch (err) {
+      console.error(`Error fetching AI movies: ${err}`);
+      setErrorAI(`Error fetching AI movies: ${err}`);
+    } finally {
+      setLoadingAI(false);
+    }
+  };
+
+  useEffect(() => {
+    if (debounce.trim() !== "") {
+      Ai_recomendation(debounce);
+    }
+  }, [debounce]);
 
   return (
     <>
@@ -107,9 +158,37 @@ const [debounce, setDebounce] = useState('');
       <div className="wrapper">
         <header className="header">
           <img src="src/assets/hero-img.png"/>
-          <h1 className=""> Find <span className="text-gradient">Movies</span> . You'll Enjoy Without the Hassel </h1>
+          <h1 className=""> Find <span className="text-gradient">Movies</span> . You'll Enjoy Without the Hassle </h1>
       <Search search={search} set_search={set_search} />
         </header>
+        <section className="trending">
+          <div className="all-movies">
+            <h2 className="text-white">AI Recommendation</h2>
+            {loadingAI ? (
+                <Spinner />
+            ) : errorAI ? (
+                <p className="text-red-500">{errorAI} </p>
+            ) : (
+                <ul>
+                  {aimovies.map((movie, index) => (
+                      <li key={movie.id}>
+
+                        <p>{index + 1}</p>
+                        {movie.poster_path ? (
+                            <img src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`} alt={movie.title} />
+                        ) : (
+                            <p>No Image Available</p>
+                        )}
+                      </li>
+                  ))}
+                </ul>
+            )}
+
+
+          </div>
+
+        </section>
+
         <section className="trending">
           <h2 className="mt-4">Trending Movies of this week</h2>
           {loading ? (
