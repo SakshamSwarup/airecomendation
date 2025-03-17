@@ -8,8 +8,7 @@ import {useDebounce} from "react-use";
 
 
 const API_URL = "https://api.themoviedb.org/3";
-const API_KEY = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3ZWJlNmZkNzk5MzAwODkzN2UwYTQ1NDBjMWYwNTk4YiIsIm5iZiI6MTc0MTAwNDI3Ni45Niwic3ViIjoiNjdjNTlkZjRkYjA1MDgyNDhhN2E3YmFhIiwic2NvcGVzIjpbImFwaV9yZWFkIl0sInZlcnNpb24iOjF9.BeOF0wbLq0UXUT3E-uzapzP70AYdHQ3VDq_OTDXb2_s";
-
+const API_KEY = "
 const options = {
   method: 'GET',
   headers: {
