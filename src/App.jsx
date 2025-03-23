@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import Spinner from "./Components/Spinner.jsx";
 import MovieCard from "./Components/MovieCard.jsx";
 import { useDebounce } from "react-use";
+import  axios from "axios";
 
 const API_URL = "https://api.themoviedb.org/3";
 const API_KEY = import.meta.env.VITE_API_KEY;
@@ -104,34 +105,30 @@ function App() {
     TrendingMovies();
   }, []); // Runs once when component mounts
 
-  // AI Recommendation Section
   const Ai_recommendation = async (query = "") => {
-    setErrorAI('');
+    setErrorAI("");
     setLoadingAI(true);
 
     try {
       const Ai_recom_endpoint = `https://ai-movie-recommender.p.rapidapi.com/api/search?q=${query}`;
-      const ai_response = await fetch(Ai_recom_endpoint, options2);
 
-      if (!ai_response.ok) {
-        throw new Error("Couldn't fetch AI movies.");
-      }
+      const response = await axios.get(Ai_recom_endpoint, options2);
+      console.log("AI Movie Response:", response.data);
 
-      const ai_data = await ai_response.json();
-      console.log('AI Recommendation Data:', ai_data);
+      if (response.data && Array.isArray(response.data.movies)) {
+        setAiMovies(response.data.movies.filter(movie => movie !== null));// Remove any null values
 
-      if (ai_data && ai_data.results) {
-        setAiMovies(ai_data.results);
       } else {
         setAiMovies([]);
       }
     } catch (err) {
       console.error(`Error fetching AI movies: ${err}`);
-      setErrorAI(`Error fetching AI movies: ${err}`);
+      setErrorAI("Error fetching AI movies. Please try again.");
     } finally {
       setLoadingAI(false);
     }
   };
+
 
   useEffect(() => {
     if (debounce.trim() !== "") {
@@ -153,31 +150,35 @@ function App() {
             {/* AI Recommendation Section */}
             <section className="trending">
               <h2 className="text-white">AI Recommendation</h2>
+
               {loadingAI ? (
                   <Spinner />
               ) : errorAI ? (
                   <p className="text-red-500">{errorAI}</p>
               ) : Array.isArray(aimovies) && aimovies.length > 0 ? (
-                  <ul>
-                    {aimovies.map((movie, index) => (
-                        <li key={movie.id}>
-                          <p>{index + 1}</p>
-                          {movie.poster_path ? (
-                              <img
-                                  src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
-                                  alt={movie.title}
-                              />
-                          ) : (
-                              <p>No Image Available</p>
-                          )}
-                          <p>{movie.title}</p> {/* Display the movie title */}
-                        </li>
+                  <ul className=" mb-3 pb-3 mt-5 my-4 ">
+                    {aimovies.map((movie) => (
+                        movie ? ( // Ensure movie is not null
+                            <li key={movie.id} className="bg-gray-800 p-2 rounded-lg shadow-md">
+                              {movie.poster_path ? (
+                                  <img
+                                      className="w-full h-auto rounded-md mx-0.25 "
+                                      src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
+                                      alt={movie.title}
+                                  />
+                              ) : (
+                                  <p className=" text-white text-2xl	">No Image Available</p>
+                              )}
+
+                            </li>
+                        ) : null
                     ))}
                   </ul>
               ) : (
                   <p className="text-white">No AI recommendations found.</p>
               )}
             </section>
+
 
             {/* Trending Movies Section */}
             <section className="trending">

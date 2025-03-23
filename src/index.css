@@ -61,11 +61,29 @@
         @apply mt-20;
 
         & ul {
-            @apply flex flex-row overflow-y-auto gap-5 -mt-10 w-full hide-scrollbar;
+            @apply flex flex-row overflow-hidden gap-5 -mt-10 w-full transition-all duration-300;
+        }
+
+        & ul:hover {
+            @apply overflow-x-auto;
+        }
+
+        & ul::-webkit-scrollbar {
+            @apply h-2 transition-all duration-300;
+        }
+
+        & ul::-webkit-scrollbar-thumb {
+            @apply bg-gray-500 rounded-full transition-all duration-300;
+        }
+        & ul:hover::-webkit-scrollbar-thumb {
+            @apply opacity-100;
+        }
+        & ul::-webkit-scrollbar-track {
+            @apply bg-slate-900 rounded-full;
         }
 
         & ul li {
-            @apply min-w-[230px] flex flex-row items-center;
+            @apply min-w-[230px] flex flex-row items-center ;
         }
 
         & ul li p {
@@ -76,6 +94,10 @@
             @apply w-[127px] h-[163px] rounded-lg object-cover -ml-3.5;
         }
     }
+
+
+
+
 
     .search {
         @apply w-full bg-light-100/5 px-4 py-3 rounded-lg mt-10 max-w-3xl mx-auto;
@@ -159,4 +181,25 @@
     &::-webkit-scrollbar {
         display: none;
     }
+}
+::-webkit-scrollbar {
+    width: 10px; /* Adjust width */
+    height: 10px; /* Adjust height for horizontal scroll */
+}
+
+/* Background of the scrollbar track */
+::-webkit-scrollbar-track {
+    background: #1a1a2e; /* Change to your desired background color */
+    border-radius: 10px;
+}
+
+/* Scrollbar thumb (draggable part) */
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(45deg, #6b73ff, #000dff); /* Gradient or solid color */
+    border-radius: 10px;
+}
+
+/* Scrollbar thumb on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(45deg, #4b50e6, #0008cc);
 }
