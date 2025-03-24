@@ -5,7 +5,7 @@ function Search({search, set_search}) {
         <div className="search">
             <div>
                 <label htmlFor="search-input">
-                    <img src= "src/assets/search.png" className="mt-2" alt = "Search" />
+                    <img src= "assets/search.png" className="mt-2" alt = "Search" />
                     <input className="form-control " value={search} onChange={(e)=>set_search(e.target.value)} type="text" placeholder="Search" />
                 </label>
             </div>

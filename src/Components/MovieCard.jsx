@@ -7,7 +7,7 @@ function MovieCard({movie:{title, poster_path, vote_average , release_date ,orig
             <h3 className="mt-4 text-white text-xl">{title}</h3>
             <div className="content">
             <div className="rating">
-                <img src= "/src/assets/Vector.png" />
+                <img src= "assets/Vector.png" />
             <p className=".rating p">{vote_average ? vote_average.toFixed(1):`NaN` }</p>
                 <span>•</span>
                 <p className="lang text-sm">{original_language}</p>
