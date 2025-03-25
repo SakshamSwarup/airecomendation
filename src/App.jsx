@@ -175,7 +175,7 @@ function App() {
                     ))}
                   </ul>
               ) : (
-                  <p className="text-white">No AI recommendations found.</p>
+                  <p className="text-white">Please Prompt .</p>
               )}
             </section>
 
