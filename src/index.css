@@ -61,7 +61,7 @@
         @apply mt-20;
 
         & ul {
-            @apply flex flex-row overflow-hidden gap-5 -mt-10 w-full transition-all duration-300;
+            @apply flex flex-row overflow-hidden gap-5 -mt-10 w-full ;
         }
 
         & ul:hover {
@@ -69,11 +69,11 @@
         }
 
         & ul::-webkit-scrollbar {
-            @apply h-2 transition-all duration-300;
+            @apply h-2 ;
         }
 
         & ul::-webkit-scrollbar-thumb {
-            @apply bg-gray-500 rounded-full transition-all duration-300;
+            @apply bg-gray-500 rounded-full ;
         }
         & ul:hover::-webkit-scrollbar-thumb {
             @apply opacity-100;

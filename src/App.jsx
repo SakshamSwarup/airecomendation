@@ -142,7 +142,7 @@ function App() {
         <div className="pattern w-full">
           <div className="wrapper">
             <header className="header">
-              <img src="assets/hero-img.png" alt="Hero" />
+              <img src="/assets/hero-img.png" alt="Hero" />
               <h1>Find <span className="text-gradient">Movies</span>. You'll Enjoy Without the Hassle</h1>
               <Search search={search} set_search={set_search} />
             </header>
